@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import json 
 import pandas as pd
 import os, sys
@@ -27,7 +27,7 @@ class QueryDB:
         self.trans.rollback()
         
     def get_ngay_filter_orders_vegan_day_tbl(self):
-        result = self.connection.execute(query.get_ngay_filter_orders_vegan_day_tbl)
+        result = self.connection.execute(text(query.get_ngay_filter_orders_vegan_day_tbl))
         df = pd.DataFrame(result.fetchall())
         ngay_filter_list = df['ngay_filter'].tolist()
         return ngay_filter_list
