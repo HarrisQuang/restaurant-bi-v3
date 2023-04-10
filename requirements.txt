@@ -1,5 +1,4 @@
 streamlit
 altair
-gspread
 sqlalchemy 
 psycopg2
