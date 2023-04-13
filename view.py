@@ -38,9 +38,11 @@ with tab1:
             with col1:
                 selected_day = st.multiselect('Chọn ngày chay', ngay_filter_list)
             submitted = st.form_submit_button('Thực hiện')
-        st.markdown("### Số đơn hàng đã bán")
         if not selected_day:
             selected_day = [ngay_filter_list[-1]]
+        
+        st.markdown("### Số đơn hàng đã bán")
+        
         total_order_orders_vegan_day_tbl_with_df = dw_qrdb.get_total_order_orders_vegan_day_tbl_with(selected_day)
         total_order_orders_vegan_day_tbl_with_df.columns = ['Ngày', 'Số đơn hàng']
         measure_delta = {'Số đơn hàng': '% Số đơn hàng'}
@@ -54,7 +56,25 @@ with tab1:
             st.altair_chart(fig, use_container_width=True)
        
         st.markdown("### Số phần đã bán của mỗi loại món ăn")
-
+        dish_list = dw_qrdb.get_distinct_dish_sell_quantity_dishes_vegan_day_tbl()
+        dish_list.append('...')
+        selected_dish_list = []
+        with st.form(key='form-chon-mon-an'):
+            cols = st.columns(5)
+            for i, col in enumerate(cols):
+                selected_dish = col.selectbox('Chọn món', dish_list, key=i, index=len(dish_list)-1)
+                selected_dish_list.append(selected_dish)
+            submitted = st.form_submit_button('Thực hiện')
+        final_selected_dish_list = []
+        for i in selected_dish_list:
+            if i != '...':
+                final_selected_dish_list.append(i)
+        if len(final_selected_dish_list) == 0:
+            final_selected_dish_list.append('Bún Thái')  
+        
+        sell_quantity_dishes_vegan_day_tbl_with_df = dw_qrdb.get_sell_quantity_dishes_vegan_day_tbl_with(selected_day, final_selected_dish_list)
+        st.table(sell_quantity_dishes_vegan_day_tbl_with_df)
+        
         st.markdown("### Xếp hạng món bán chạy")
    
 with tab2:

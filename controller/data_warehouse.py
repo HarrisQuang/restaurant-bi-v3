@@ -32,6 +32,12 @@ class QueryDB:
         ngay_filter_list = df['ngay_filter'].tolist()
         return ngay_filter_list
 
+    def get_distinct_dish_sell_quantity_dishes_vegan_day_tbl(self):
+        result = self.connection.execute(text(query.get_distinct_dish_sell_quantity_dishes_vegan_day_tbl))
+        df = pd.DataFrame(result.fetchall())
+        dish_list = df['ten_mon'].tolist()
+        return dish_list
+    
     def get_total_order_orders_vegan_day_tbl_with(self, ngay_filter_list):
         ngay_filter_list = tuple(ngay_filter_list)
         if len(ngay_filter_list) == 1:
@@ -40,7 +46,21 @@ class QueryDB:
             result = self.connection.execute(text(query.get_total_order_orders_vegan_day_tbl_with['multi_days'] % (ngay_filter_list,)))
         total_order_orders_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
         return total_order_orders_vegan_day_tbl_with_df
-
+    
+    def get_sell_quantity_dishes_vegan_day_tbl_with(self, ngay_filter_list, final_selected_dish_list):
+        ngay_filter_list = tuple(ngay_filter_list)
+        final_selected_dish_list = tuple(final_selected_dish_list)
+        if len(ngay_filter_list) == 1 and len(final_selected_dish_list) == 1:
+            result = self.connection.execute(text(query.get_sell_quantity_dishes_vegan_day_tbl_with['single_day_single_dish'] % (ngay_filter_list[0], final_selected_dish_list[0])))
+        elif len(ngay_filter_list) == 1 and len(final_selected_dish_list) > 1:
+            result = self.connection.execute(text(query.get_sell_quantity_dishes_vegan_day_tbl_with['single_day_multi_dishes'] % (ngay_filter_list[0], final_selected_dish_list)))
+        elif len(ngay_filter_list) > 1 and len(final_selected_dish_list) == 1:
+            result = self.connection.execute(text(query.get_sell_quantity_dishes_vegan_day_tbl_with['multi_days_single_dish'] % (ngay_filter_list, final_selected_dish_list[0])))
+        elif len(ngay_filter_list) > 1 and len(final_selected_dish_list) > 1:
+            result = self.connection.execute(text(query.get_sell_quantity_dishes_vegan_day_tbl_with['multi_days_multi_dishes'] % (ngay_filter_list, final_selected_dish_list)))
+        sell_quantity_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
+        return sell_quantity_dishes_vegan_day_tbl_with_df
+    
 class WranglingData:
     def calculate_percentage_change(self, df, orgin, criteria, grouping = True):
         temp = []
