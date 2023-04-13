@@ -73,7 +73,17 @@ with tab1:
             final_selected_dish_list.append('Bún Thái')  
         
         sell_quantity_dishes_vegan_day_tbl_with_df = dw_qrdb.get_sell_quantity_dishes_vegan_day_tbl_with(selected_day, final_selected_dish_list)
-        st.table(sell_quantity_dishes_vegan_day_tbl_with_df)
+        sell_quantity_dishes_vegan_day_tbl_with_df.columns = ['ngay_number', 'Ngày', 'Tên món', 'Số phần bán']
+        measure_delta = {'Số phần bán': '% Số phần bán'}
+        sell_quantity_dishes_vegan_day_tbl_with_df = dw_wd.calculate_percentage_change(sell_quantity_dishes_vegan_day_tbl_with_df, 'Tên món', measure_delta)
+        makeup_cols = ['% Số phần bán']
+        sell_quantity_dishes_vegan_day_tbl_with_df = utils.makeup_percentage_change(sell_quantity_dishes_vegan_day_tbl_with_df, makeup_cols)
+        sell_quantity_dishes_vegan_day_tbl_with_df = sell_quantity_dishes_vegan_day_tbl_with_df.iloc[:,1:-1]
+        if len(selected_day) == 1:
+            st.table(sell_quantity_dishes_vegan_day_tbl_with_df.style.format({'Số phần bán': '{:,.0f}'}))
+        else:
+            fig = utils.get_line_chart(data = sell_quantity_dishes_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số phần bán', measure_delta = measure_delta, cate = 'Tên món')
+            st.altair_chart(fig, use_container_width=True)
         
         st.markdown("### Xếp hạng món bán chạy")
    
