@@ -86,6 +86,7 @@ with tab1:
             st.altair_chart(fig, use_container_width=True)
         
         st.markdown("### Xếp hạng món bán chạy")
+        
    
 with tab2:
     st.title("XEM BÁO CÁO THEO NGÀY")
