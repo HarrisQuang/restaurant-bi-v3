@@ -87,6 +87,12 @@ with tab1:
         
         st.markdown("### Xếp hạng món bán chạy")
         
+        col1, col2 = st.columns(2)
+        with col1:
+            top_quantity = st.slider("Top SL:", 1, 20, 3)
+        col3, col4 = st.columns(2)
+        with col3:
+            top_revenue = st.slider("Top Doanh thu:", 1, 20, 3)
    
 with tab2:
     st.title("XEM BÁO CÁO THEO NGÀY")
