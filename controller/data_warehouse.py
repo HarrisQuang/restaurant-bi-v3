@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, text
 import json 
 import pandas as pd
+import numpy as np
 import os, sys
 path = os.path.abspath('.')
 sys.path.append(path)
@@ -61,18 +62,18 @@ class QueryDB:
         sell_quantity_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
         return sell_quantity_sales_dishes_vegan_day_tbl_with_df
     
-    def get_ranking_quantity_sales_dishes_vegan_day_tbl_with(self, ngay_filter_list, top_quantity = None, top_revenue = None):
+    def get_ranking_sales_dishes_vegan_day_tbl_with(self, ngay_filter_list, top_quantity = None, top_revenue = None):
         ngay_filter_list = tuple(ngay_filter_list)
         if len(ngay_filter_list) == 1 and top_quantity != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_sl_ban'] % (ngay_filter_list[0], top_quantity)))
+            result = self.connection.execute(text(query.get_ranking_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_sl_ban'] % (ngay_filter_list[0], top_quantity)))
         elif len(ngay_filter_list) > 1 and top_quantity != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_sl_ban'] % (ngay_filter_list, top_quantity)))
+            result = self.connection.execute(text(query.get_ranking_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_sl_ban'] % (ngay_filter_list, top_quantity)))
         elif len(ngay_filter_list) == 1 and top_revenue != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_tong'] % (ngay_filter_list[0], top_revenue)))
+            result = self.connection.execute(text(query.get_ranking_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_tong'] % (ngay_filter_list[0], top_revenue)))
         elif len(ngay_filter_list) > 1 and top_revenue != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_tong'] % (ngay_filter_list, top_revenue)))
-        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
-        return ranking_quantity_sales_dishes_vegan_day_tbl_with_df
+            result = self.connection.execute(text(query.get_ranking_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_tong'] % (ngay_filter_list, top_revenue)))
+        ranking_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
+        return ranking_sales_dishes_vegan_day_tbl_with_df
     
 class WranglingData:
     def calculate_percentage_change(self, df, orgin, criteria, grouping = True):
@@ -103,4 +104,19 @@ class WranglingData:
                     temp.append(delta)
             df[criteria[el]] = temp
         df = df.drop('flag', axis = 1)
+        return df
+    
+    def generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(self, df):
+        df['xep_hang_sl_ban'] = df['xep_hang_sl_ban'].astype('int')
+        df = df.groupby(['ngay_filter', 'xep_hang_sl_ban'], as_index=False).agg({'ten_mon': ', '.join, 'sl_ban': np.max})
+        df['value_pivot'] = df['ten_mon'] + ' (' + df['sl_ban'].astype('str') + ')'
+        df = df.pivot_table(values='value_pivot', index='xep_hang_sl_ban', columns='ngay_filter', aggfunc = np.max)
+        return df
+    
+    def generate_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(self, df):
+        df['xep_hang_tong'] = df['xep_hang_tong'].astype('int')
+        df['tong'] = df['tong'].apply(lambda x: '{:,.0f}'.format(x))
+        df = df.groupby(['ngay_filter', 'xep_hang_tong'], as_index=False).agg({'ten_mon': ', '.join, 'tong': np.max})
+        df['value_pivot'] = df['ten_mon'] + ' (' + df['tong'].astype('str') + ')'
+        df = df.pivot_table(values='value_pivot', index='xep_hang_tong', columns='ngay_filter', aggfunc = np.max)
         return df
