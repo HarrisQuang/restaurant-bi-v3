@@ -90,12 +90,15 @@ with tab1:
         col1, col2 = st.columns(2)
         with col1:
             top_quantity = st.slider("Top SL:", 1, 20, 3)
-        
+        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, top_quantity)
+        st.table(ranking_quantity_sales_dishes_vegan_day_tbl_with_df.style.format({'sl_ban': '{:,.0f}', 'xep_hang_sl_ban': '{:,.0f}'}))
         
         col3, col4 = st.columns(2)
         with col3:
             top_revenue = st.slider("Top Doanh thu:", 1, 20, 3)
-   
+        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
+        st.table(ranking_quantity_sales_dishes_vegan_day_tbl_with_df.style.format({'tong': '{:,.0f}', 'xep_hang_tong': '{:,.0f}'}))
+
 with tab2:
     st.title("XEM BÁO CÁO THEO NGÀY")
 

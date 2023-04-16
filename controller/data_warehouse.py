@@ -61,6 +61,19 @@ class QueryDB:
         sell_quantity_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
         return sell_quantity_sales_dishes_vegan_day_tbl_with_df
     
+    def get_ranking_quantity_sales_dishes_vegan_day_tbl_with(self, ngay_filter_list, top_quantity = None, top_revenue = None):
+        ngay_filter_list = tuple(ngay_filter_list)
+        if len(ngay_filter_list) == 1 and top_quantity != None:
+            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_sl_ban'] % (ngay_filter_list[0], top_quantity)))
+        elif len(ngay_filter_list) > 1 and top_quantity != None:
+            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_sl_ban'] % (ngay_filter_list, top_quantity)))
+        elif len(ngay_filter_list) == 1 and top_revenue != None:
+            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_tong'] % (ngay_filter_list[0], top_revenue)))
+        elif len(ngay_filter_list) > 1 and top_revenue != None:
+            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_tong'] % (ngay_filter_list, top_revenue)))
+        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
+        return ranking_quantity_sales_dishes_vegan_day_tbl_with_df
+    
 class WranglingData:
     def calculate_percentage_change(self, df, orgin, criteria, grouping = True):
         temp = []
