@@ -1,6 +1,6 @@
 import altair as alt
 
-def get_line_chart(data, x, y, measure_delta, cate = None, sorting = False):
+def create_line_chart(data, x, y, measure_delta, cate = None, sorting = False):
     hover = alt.selection_single(
         fields=[x],
         nearest=True,

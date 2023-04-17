@@ -50,9 +50,10 @@ with tab1:
         makeup_cols = ['% Số đơn hàng']
         total_order_orders_vegan_day_tbl_with_df = utils.makeup_percentage_change(total_order_orders_vegan_day_tbl_with_df, makeup_cols)
         if len(selected_day) == 1:
+            total_order_orders_vegan_day_tbl_with_df = total_order_orders_vegan_day_tbl_with_df.iloc[:,:-1]
             st.table(total_order_orders_vegan_day_tbl_with_df)
         else:
-            fig = utils.get_line_chart(data = total_order_orders_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số đơn hàng', measure_delta = measure_delta, sorting = True)
+            fig = utils.create_line_chart(data = total_order_orders_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số đơn hàng', measure_delta = measure_delta, sorting = True)
             st.altair_chart(fig, use_container_width=True)
        
         st.markdown("### Số phần đã bán của mỗi loại món ăn")
@@ -82,7 +83,7 @@ with tab1:
             sell_quantity_sales_dishes_vegan_day_tbl_with_df = sell_quantity_sales_dishes_vegan_day_tbl_with_df.iloc[:,1:-1]
             st.table(sell_quantity_sales_dishes_vegan_day_tbl_with_df.style.format({'Số phần bán': '{:,.0f}'}))
         else:
-            fig = utils.get_line_chart(data = sell_quantity_sales_dishes_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số phần bán', measure_delta = measure_delta, cate = 'Tên món')
+            fig = utils.create_line_chart(data = sell_quantity_sales_dishes_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số phần bán', measure_delta = measure_delta, cate = 'Tên món')
             st.altair_chart(fig, use_container_width=True)
         
         st.markdown("### Xếp hạng món bán chạy")
