@@ -60,7 +60,7 @@ with tab1:
         dish_list = dw_qrdb.get_distinct_dish_quantity_sales_dishes_vegan_day_tbl()
         dish_list.append('...')
         selected_dish_list = []
-        with st.form(key='form-chon-mon-an'):
+        with st.form(key='form-chon-nhieu-mon-an'):
             cols = st.columns(5)
             for i, col in enumerate(cols):
                 selected_dish = col.selectbox('Chọn món', dish_list, key=i, index=len(dish_list)-1)
@@ -86,19 +86,28 @@ with tab1:
             fig = utils.create_line_chart(data = sell_quantity_sales_dishes_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số phần bán', measure_delta = measure_delta, cate = 'Tên món')
             st.altair_chart(fig, use_container_width=True)
         
+        with st.form(key='form-chon-1-mon-an'):
+            col1, col2 = st.columns(2)
+            with col1:
+                sltd_dish = st.selectbox("Chọn món", dish_list, index=len(dish_list)-1)
+            submitted = st.form_submit_button('Thực hiện')
+        
+        sale_off_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with(selected_day, sltd_dish)
+        st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_df)
+        
         st.markdown("### Xếp hạng món bán chạy")
         
         col1, col2 = st.columns(2)
         with col1:
             top_quantity = st.slider("Top SL:", 1, 20, 3)
-        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_sales_dishes_vegan_day_tbl_with(selected_day, top_quantity)
+        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, top_quantity)
         ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_wd.generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
         st.table(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
         
         col3, col4 = st.columns(2)
         with col3:
             top_revenue = st.slider("Top Doanh thu:", 1, 20, 3)
-        ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
+        ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
         ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_wd.generate_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)        
         st.table(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)
 
