@@ -18,6 +18,6 @@ class Query:
         "multi_days_with_xep_hang_tong": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_tong <= %s order by xep_hang_tong"
     }
     get_sale_off_quantity_sales_dishes_vegan_day_tbl_with = {
-        "single_day": "SELECT ngay, ngay_filter, ma_mon, ten_mon, sl_ban, tong, sl_ban_km, sl_ban_ko_km, tong_km, tong_ko_km, percent_sl_ban_km, percent_sl_ban_ko_km, percent_tong_km, percent_tong_ko_km FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and ten_mon = '%s' order by ngay_number",
-        "multi_days": "SELECT ngay, ngay_filter, ma_mon, ten_mon, sl_ban, tong, sl_ban_km, sl_ban_ko_km, tong_km, tong_ko_km, percent_sl_ban_km, percent_sl_ban_ko_km, percent_tong_km, percent_tong_ko_km FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and ten_mon = '%s' order by ngay_number"
+        "single_day": "SELECT ngay_number, ngay_filter, ma_mon, ten_mon, sl_ban, tong, sl_ban_km, sl_ban_ko_km, tong_km, tong_ko_km, percent_sl_ban_km, percent_sl_ban_ko_km, percent_tong_km, percent_tong_ko_km, sl_ban_km_display, sl_ban_ko_km_display, tong_km_display, tong_ko_km_display FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and ten_mon = '%s' order by ngay_number",
+        "multi_days": "SELECT ngay_number, ngay_filter, ma_mon, ten_mon, sl_ban, tong, sl_ban_km, sl_ban_ko_km, tong_km, tong_ko_km, percent_sl_ban_km, percent_sl_ban_ko_km, percent_tong_km, percent_tong_ko_km, sl_ban_km_display, sl_ban_ko_km_display, tong_km_display, tong_ko_km_display FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and ten_mon = '%s' order by ngay_number"
     }

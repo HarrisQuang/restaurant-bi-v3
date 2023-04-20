@@ -44,19 +44,17 @@ with tab1:
         st.markdown("### Số đơn hàng đã bán")
         
         total_order_orders_vegan_day_tbl_with_df = dw_qrdb.get_total_order_orders_vegan_day_tbl_with(selected_day)
-        total_order_orders_vegan_day_tbl_with_df.columns = ['Ngày', 'Số đơn hàng']
-        measure_delta = {'Số đơn hàng': '% Số đơn hàng'}
-        total_order_orders_vegan_day_tbl_with_df = dw_wd.calculate_percentage_change(total_order_orders_vegan_day_tbl_with_df, 'Ngày', measure_delta, grouping = False)
-        makeup_cols = ['% Số đơn hàng']
-        total_order_orders_vegan_day_tbl_with_df = utils.makeup_percentage_change(total_order_orders_vegan_day_tbl_with_df, makeup_cols)
+        total_order_orders_vegan_day_tbl_final_df, measure_delta = dw_wd.generate_total_order_orders_vegan_day_tbl_final_df(total_order_orders_vegan_day_tbl_with_df)
+        
         if len(selected_day) == 1:
-            total_order_orders_vegan_day_tbl_with_df = total_order_orders_vegan_day_tbl_with_df.iloc[:,:-1]
-            st.table(total_order_orders_vegan_day_tbl_with_df)
+            total_order_orders_vegan_day_tbl_final_df = total_order_orders_vegan_day_tbl_final_df.iloc[:,:-1]
+            st.table(total_order_orders_vegan_day_tbl_final_df)
         else:
-            fig = utils.create_line_chart(data = total_order_orders_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số đơn hàng', measure_delta = measure_delta, sorting = True)
+            fig = utils.create_line_chart(data = total_order_orders_vegan_day_tbl_final_df, x = 'Ngày', y = 'Số đơn hàng', measure_delta = measure_delta, sorting = True)
             st.altair_chart(fig, use_container_width=True)
        
         st.markdown("### Số phần đã bán của mỗi loại món ăn")
+        
         dish_list = dw_qrdb.get_distinct_dish_quantity_sales_dishes_vegan_day_tbl()
         dish_list.append('...')
         selected_dish_list = []
@@ -74,26 +72,35 @@ with tab1:
             final_selected_dish_list.append('Bún Thái')  
         
         sell_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_sell_quantity_sales_dishes_vegan_day_tbl_with(selected_day, final_selected_dish_list)
-        sell_quantity_sales_dishes_vegan_day_tbl_with_df.columns = ['ngay_number', 'Ngày', 'Tên món', 'Số phần bán']
-        measure_delta = {'Số phần bán': '% Số phần bán'}
-        sell_quantity_sales_dishes_vegan_day_tbl_with_df = dw_wd.calculate_percentage_change(sell_quantity_sales_dishes_vegan_day_tbl_with_df, 'Tên món', measure_delta)
-        makeup_cols = ['% Số phần bán']
-        sell_quantity_sales_dishes_vegan_day_tbl_with_df = utils.makeup_percentage_change(sell_quantity_sales_dishes_vegan_day_tbl_with_df, makeup_cols)
+        sell_quantity_sales_dishes_vegan_day_tbl_final_df, measure_delta = dw_wd.generate_sell_quantity_sales_dishes_vegan_day_tbl_final_df(sell_quantity_sales_dishes_vegan_day_tbl_with_df)
+        
         if len(selected_day) == 1:
-            sell_quantity_sales_dishes_vegan_day_tbl_with_df = sell_quantity_sales_dishes_vegan_day_tbl_with_df.iloc[:,1:-1]
-            st.table(sell_quantity_sales_dishes_vegan_day_tbl_with_df.style.format({'Số phần bán': '{:,.0f}'}))
+            sell_quantity_sales_dishes_vegan_day_tbl_final_df = sell_quantity_sales_dishes_vegan_day_tbl_final_df.iloc[:,1:-1]
+            st.table(sell_quantity_sales_dishes_vegan_day_tbl_final_df.style.format({'Số phần bán': '{:,.0f}'}))
         else:
-            fig = utils.create_line_chart(data = sell_quantity_sales_dishes_vegan_day_tbl_with_df, x = 'Ngày', y = 'Số phần bán', measure_delta = measure_delta, cate = 'Tên món')
+            fig = utils.create_line_chart(data = sell_quantity_sales_dishes_vegan_day_tbl_final_df, x = 'Ngày', y = 'Số phần bán', measure_delta = measure_delta, cate = 'Tên món')
             st.altair_chart(fig, use_container_width=True)
+        
+        st.markdown("### Số lượng được khuyến mãi")
         
         with st.form(key='form-chon-1-mon-an'):
             col1, col2 = st.columns(2)
             with col1:
                 sltd_dish = st.selectbox("Chọn món", dish_list, index=len(dish_list)-1)
             submitted = st.form_submit_button('Thực hiện')
-        
+            
+        if sltd_dish == '...':
+            sltd_dish = 'Bún Thái'
+            
         sale_off_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with(selected_day, sltd_dish)
-        st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_df)
+        sale_off_quantity_sales_dishes_vegan_day_tbl_final_df = dw_wd.generate_sale_off_quantity_sales_dishes_vegan_day_tbl_final_df(sale_off_quantity_sales_dishes_vegan_day_tbl_with_df)
+        
+        if len(selected_day) == 1:
+            sale_off_quantity_sales_dishes_vegan_day_tbl_final_df = sale_off_quantity_sales_dishes_vegan_day_tbl_final_df[['Ngày', 'Tên món', 'Số lượng', 'Số lượng có KM', 'Số lượng ko KM', 
+                                                                                                                        'Doanh thu', 'Doanh thu có KM', 'Doanh thu ko KM']]
+            st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_final_df.style.format({'Số lượng': '{:.0f}', 'Doanh thu': '{:,.0f}'}))
+        else:
+            pass
         
         st.markdown("### Xếp hạng món bán chạy")
         
@@ -101,15 +108,15 @@ with tab1:
         with col1:
             top_quantity = st.slider("Top SL:", 1, 20, 3)
         ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, top_quantity)
-        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_wd.generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
-        st.table(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
+        ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
+        st.table(ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df)
         
         col3, col4 = st.columns(2)
         with col3:
             top_revenue = st.slider("Top Doanh thu:", 1, 20, 3)
         ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
-        ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_wd.generate_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)        
-        st.table(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)
+        ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)        
+        st.table(ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df)
 
 with tab2:
     st.title("XEM BÁO CÁO THEO NGÀY")

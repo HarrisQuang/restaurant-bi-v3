@@ -7,7 +7,7 @@ path = os.path.abspath('.')
 sys.path.append(path)
 
 import query
-import controller.utils as ut
+import controller.utils as utils
 query = query.Query()
 
 with open('config.json', "r", encoding='utf-8') as f:
@@ -128,4 +128,26 @@ class WranglingData:
         df = df.groupby(['ngay_filter', 'xep_hang_tong'], as_index=False).agg({'ten_mon': ', '.join, 'tong': np.max})
         df['value_pivot'] = df['ten_mon'] + ' (' + df['tong'].astype('str') + ')'
         df = df.pivot_table(values='value_pivot', index='xep_hang_tong', columns='ngay_filter', aggfunc = np.max)
+        return df
+    
+    def generate_total_order_orders_vegan_day_tbl_final_df(self, df):
+        df.columns = ['Ngày', 'Số đơn hàng']
+        measure_delta = {'Số đơn hàng': '% Số đơn hàng'}
+        df = self.calculate_percentage_change(df, 'Ngày', measure_delta, grouping = False)
+        makeup_cols = ['% Số đơn hàng']
+        df = utils.makeup_percentage_change(df, makeup_cols)
+        return df, measure_delta
+    
+    def generate_sell_quantity_sales_dishes_vegan_day_tbl_final_df(self, df):
+        df.columns = ['ngay_number', 'Ngày', 'Tên món', 'Số phần bán']
+        measure_delta = {'Số phần bán': '% Số phần bán'}
+        df = self.calculate_percentage_change(df, 'Tên món', measure_delta)
+        makeup_cols = ['% Số phần bán']
+        df = utils.makeup_percentage_change(df, makeup_cols)
+        return df, measure_delta
+    
+    def generate_sale_off_quantity_sales_dishes_vegan_day_tbl_final_df(self, df):
+        df.columns = ['ngay_number', 'Ngày', 'Mã món', 'Tên món', 'Số lượng', 'Doanh thu', 
+        'Số lượng có KM origin', 'Số lượng ko KM origin', 'Doanh thu có KM origin', 'Doanh thu ko KM origin', 'Phần trăm số lượng có KM', 'Phần trăm số lượng ko KM', 
+        'Phần trăm doanh thu có KM', 'Phần trăm doanh thu ko KM', 'Số lượng có KM', 'Số lượng ko KM', 'Doanh thu có KM', 'Doanh thu ko KM' ]
         return df
