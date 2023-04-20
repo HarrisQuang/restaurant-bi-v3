@@ -92,13 +92,11 @@ with tab1:
         if sltd_dish == '...':
             sltd_dish = 'Bún Thái'
             
-        sale_off_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with(selected_day, sltd_dish)
-        sale_off_quantity_sales_dishes_vegan_day_tbl_final_df = dw_wd.generate_sale_off_quantity_sales_dishes_vegan_day_tbl_final_df(sale_off_quantity_sales_dishes_vegan_day_tbl_with_df)
+        sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day(selected_day, sltd_dish)
+        sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df = dw_wd.generate_sale_off_quantity_sales_dishes_vegan_day_tbl_single_day_df(sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df)
         
         if len(selected_day) == 1:
-            sale_off_quantity_sales_dishes_vegan_day_tbl_final_df = sale_off_quantity_sales_dishes_vegan_day_tbl_final_df[['Ngày', 'Tên món', 'Số lượng', 'Số lượng có KM', 'Số lượng ko KM', 
-                                                                                                                        'Doanh thu', 'Doanh thu có KM', 'Doanh thu ko KM']]
-            st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_final_df.style.format({'Số lượng': '{:.0f}', 'Doanh thu': '{:,.0f}'}))
+            st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df.style.format({'Số lượng': '{:.0f}', 'Doanh thu': '{:,.0f}'}))
         else:
             pass
         
