@@ -17,7 +17,6 @@ st.set_page_config(
     layout="wide",
 )
 
-
 dw_qrdb = dw.QueryDB()
 dw_wd = dw.WranglingData()
 dw_qrdb.begin()
@@ -98,11 +97,11 @@ with tab1:
             st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df.style.format({'Số lượng': '{:.0f}', 'Doanh thu': '{:,.0f}'}))
         else:
             sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days(selected_day, sltd_dish)
-            fig = utils.create_bar_chart(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, label_colors)
-            st.altair_chart(alt.layer(fig).facet(column = alt.Column('ngay_filter:O', title=None, header=alt.Header(labelColor='white', labelOrient='top'))).configure_view(
-            strokeWidth=0), use_container_width=True)
-
-        
+            fig, text = utils.create_bar_chart(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, label_colors)
+            st.altair_chart(alt.layer(fig, text).facet(column = alt.Column('ngay_filter:O', title=None, header=alt.Header(labelColor='white', labelOrient='bottom', labelAngle=-45,
+                            labelAlign='right', labelFontSize=12))).configure_view(
+            strokeWidth=0), use_container_width=False)
+                    
         st.markdown("### Xếp hạng món bán chạy")
         
         col1, col2 = st.columns(2)
