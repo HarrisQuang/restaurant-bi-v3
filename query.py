@@ -17,5 +17,15 @@ class Query:
         "single_day_with_xep_hang_tong": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and xep_hang_tong <= %s order by xep_hang_tong",
         "multi_days_with_xep_hang_tong": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_tong <= %s order by xep_hang_tong"
     }
-    get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days = "SELECT ngay_number, ngay_filter, ma_mon, ten_mon, sl_ban, tong, sl_ban_km, sl_ban_ko_km, tong_km, tong_ko_km, percent_sl_ban_km, percent_sl_ban_ko_km, percent_tong_km, percent_tong_ko_km, sl_ban_km_display, sl_ban_ko_km_display, tong_km_display, tong_ko_km_display FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and ten_mon = '%s' order by ngay_number"
+    get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days = '''
+                                                                        select *
+                                                                        from (SELECT ngay_number, ngay_filter, ten_mon, sl_ban, float8(tong) tong, 'KM' main_cate,
+                                                                        sl_ban_km sl_ban_cate, float8(tong_km) tong_cate, percent_sl_ban_km percent_sl, percent_tong_km percent_tong
+                                                                        FROM quantity_sales_dishes_vegan_day
+                                                                        union all
+                                                                        SELECT ngay_number, ngay_filter, ten_mon, sl_ban, float8(tong) tong, 'Not KM' main_cate,
+                                                                        sl_ban_ko_km sl_ban_cate, float8(tong_ko_km) tong_cate, percent_sl_ban_ko_km percent_sl, percent_tong_ko_km percent_tong
+                                                                        FROM quantity_sales_dishes_vegan_day) tbl
+                                                                        where tbl.ngay_filter in %s and tbl.ten_mon = '%s' order by ngay_number
+                                                                        '''
     get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day = "SELECT ngay_filter, ten_mon, sl_ban, tong, sl_ban_km_display, sl_ban_ko_km_display, tong_km_display, tong_ko_km_display FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and ten_mon = '%s' order by ngay_number"
