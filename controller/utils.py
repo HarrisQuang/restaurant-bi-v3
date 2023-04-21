@@ -1,5 +1,21 @@
 import altair as alt
 
+def create_bar_chart(data, label_colors):
+    fig = alt.Chart(data).mark_bar().encode(x=alt.X('main_cate:N', title=None, axis=alt.Axis(labelColor=label_colors), 
+                                                                sort=['KM', 'Not KM']), 
+                                                        y=alt.Y('sl_ban_cate:Q', axis=alt.Axis(grid=True, title=None, values=list(range(0, 300, 20)))),
+                                                        tooltip=[alt.Tooltip("tong_cate", title="Tong"),
+                                                                alt.Tooltip("percent_sl", title="Percent Sl"),
+                                                                alt.Tooltip("percent_tong", title="Percent Tong")
+                                                                ])
+
+    # text = alt.Chart(data).mark_text(opacity=0.5, color='white', align = 'center', baseline = 'bottom', dx = 0, dy=0).encode(
+    #     x=alt.X('main-cate:N', sort=['KM', 'Not KM']),
+    #     y=alt.Y('sl_ban_cate:Q', axis = alt.Axis(values=list(range(0, 300, 20)))),
+    #     text=alt.Text('sl_ban_cate:Q', format=',.0f')
+    # )
+    return fig
+
 def create_line_chart(data, x, y, measure_delta, cate = None, sorting = False):
     hover = alt.selection_single(
         fields=[x],

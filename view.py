@@ -98,7 +98,10 @@ with tab1:
             st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df.style.format({'Số lượng': '{:.0f}', 'Doanh thu': '{:,.0f}'}))
         else:
             sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days(selected_day, sltd_dish)
-            st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df)
+            fig = utils.create_bar_chart(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, label_colors)
+            st.altair_chart(alt.layer(fig).facet(column = alt.Column('ngay_filter:O', title=None, header=alt.Header(labelColor='white', labelOrient='top'))).configure_view(
+            strokeWidth=0), use_container_width=True)
+
         
         st.markdown("### Xếp hạng món bán chạy")
         
