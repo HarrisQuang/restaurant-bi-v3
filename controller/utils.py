@@ -15,7 +15,11 @@ def create_bar_chart(data, label_colors):
             text=alt.Text('sum(sl_ban_cate):Q', format=',.0f')
         )
     
-    return fig, text
+    line = alt.Chart(data).mark_line().encode(
+                        
+                        y = 'sl_ban' + ':Q')
+    
+    return fig, text, line
 
 def create_line_chart(data, x, y, measure_delta, cate = None, sorting = False):
     hover = alt.selection_single(

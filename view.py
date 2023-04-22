@@ -7,6 +7,7 @@ path = os.path.abspath('.')
 sys.path.append(path)
 import controller.data_warehouse as dw
 import controller.utils as utils
+import plotly.express as px
 
 with open('config.json', "r", encoding='utf-8') as f:
     data = json.loads(f.read())
@@ -97,10 +98,16 @@ with tab1:
             st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df.style.format({'Số lượng': '{:.0f}', 'Doanh thu': '{:,.0f}'}))
         else:
             sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days(selected_day, sltd_dish)
-            fig, text = utils.create_bar_chart(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, label_colors)
-            st.altair_chart(alt.layer(fig, text).facet(column = alt.Column('ngay_filter:O', title=None, header=alt.Header(labelColor='white', labelOrient='bottom', labelAngle=-45,
-                            labelAlign='right', labelFontSize=12))).configure_view(
-            strokeWidth=0), use_container_width=False)
+            fig = px.bar(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x='ngay_filter', y='sl_ban_cate', 
+                         color='main_cate', hover_data=['tong_cate', 'percent_sl', 'percent_tong'], barmode = 'group').add_traces(
+                        px.line(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x="ngay_filter", y="sl_ban").update_traces(showlegend=True, name="Sl tổng").data
+                        )
+            st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+            
+            # fig, text, line = utils.create_bar_chart(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, label_colors)
+            # st.altair_chart(alt.layer(fig, text, line).facet(column = alt.Column('ngay_filter:O', title=None, header=alt.Header(labelColor='white', labelOrient='bottom', labelAngle=-45,
+            #                 labelAlign='right', labelFontSize=12))).configure_view(
+            # strokeWidth=0), use_container_width=False)
                     
         st.markdown("### Xếp hạng món bán chạy")
         
