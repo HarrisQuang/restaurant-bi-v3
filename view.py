@@ -99,7 +99,7 @@ with tab1:
         else:
             sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days(selected_day, sltd_dish)
             fig = px.bar(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x='ngay_filter', y='sl_ban_cate', 
-                         color='main_cate', hover_data=['tong_cate', 'percent_sl', 'percent_tong'], barmode = 'group', offset =0.1).update_layout(bargap=0.8).add_traces(
+                         color='main_cate', hover_data=['tong_cate', 'percent_sl', 'percent_tong'], barmode = 'group').update_xaxes(tickangle=90).add_traces(
                         px.line(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x="ngay_filter", y="sl_ban").update_traces(showlegend=True, name="Sl tổng").update_layout(bargap=0.1).data
                         )
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
