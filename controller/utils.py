@@ -1,25 +1,50 @@
 import altair as alt
 
 def create_bar_chart(data, label_colors):
-    fig = alt.Chart(data).mark_bar(size=30).encode(x=alt.X('main_cate:N', title=None, sort=['KM', 'Not KM']), 
-                                                        y=alt.Y('sum(sl_ban_cate):Q', axis=alt.Axis(grid=True, title=None, values=list(range(0, 300, 20))), stack='zero'),
-                                                        color = 'main_cate:N',
-                                                        tooltip=[alt.Tooltip("tong_cate", title="Tong"),
-                                                                alt.Tooltip("percent_sl", title="Percent Sl"),
-                                                                alt.Tooltip("percent_tong", title="Percent Tong")
-                                                                ]).properties(width=alt.Step(45))
+    # base = alt.Chart(data).encode(x=alt.X('main_cate:N'))
+    # bar = base.mark_bar().encode(xOffset="main_cate:N", y=alt.Y('sum(sl_ban_cate):Q', axis=alt.Axis(grid=True, title=None, values=list(range(0, 300, 20))), stack='zero'),
+    #                             color = alt.Color('main_cate:N'),
+    #                             tooltip=[alt.Tooltip("tong_cate", title="Tong"),
+    #                                     alt.Tooltip("percent_sl", title="Percent Sl"),
+    #                                     alt.Tooltip("percent_tong", title="Percent Tong")
+    #                                     ]).properties(width=alt.Step(45),
+    #                             )
+    
+    # line =  base.mark_line(color='red').encode(
+    #                             y = 'sl_ban' + ':Q'
+    #                             )
+    
+    fig = alt.Chart(data).mark_bar(size=20).encode(x=alt.X('main_cate:N', title=None, sort=['KM', 'Not KM']), 
+                                                    y=alt.Y('sum(sl_ban_cate):Q', axis=alt.Axis(grid=True, title=None, values=list(range(0, 300, 20))), stack='zero'),
+                                                    column = 'ngay_filter:N',
+                                                    color = alt.Color('main_cate:N'),
+                                                    tooltip=[alt.Tooltip("tong_cate", title="Tong"),
+                                                            alt.Tooltip("percent_sl", title="Percent Sl"),
+                                                            alt.Tooltip("percent_tong", title="Percent Tong")
+                                                            ]).properties(width=alt.Step(30))
+    
+    line =  alt.Chart(data).mark_line(color='red').encode( x = 'ngay_filter:N',
+                                y = 'sl_ban' + ':Q'
+                                )
+    
+    # fig = alt.Chart(data).mark_bar(size=30).encode(x=alt.X('main_cate:N', title=None, sort=['KM', 'Not KM']), 
+    #                                                     y=alt.Y('sum(sl_ban_cate):Q', axis=alt.Axis(grid=True, title=None, values=list(range(0, 300, 20))), stack='zero'),
+    #                                                     color = 'main_cate:N',
+    #                                                     tooltip=[alt.Tooltip("tong_cate", title="Tong"),
+    #                                                             alt.Tooltip("percent_sl", title="Percent Sl"),
+    #                                                             alt.Tooltip("percent_tong", title="Percent Tong")
+    #                                                             ]).properties(width=alt.Step(45))
 
-    text = alt.Chart(data).mark_text(opacity=0.5, color='white', align = 'center', baseline = 'bottom', dx = 0, dy=0).encode(
-            x=alt.X('main_cate:N', sort=['KM', 'Not KM']),
-            y=alt.Y('sl_ban_cate:Q', axis = alt.Axis(values=list(range(0, 300, 20)))),
-            text=alt.Text('sum(sl_ban_cate):Q', format=',.0f')
-        )
+    # text = alt.Chart(data).mark_text(opacity=0.5, color='white', align = 'center', baseline = 'bottom', dx = 0, dy=0).encode(
+    #         x=alt.X('main_cate:N', sort=['KM', 'Not KM']),
+    #         y=alt.Y('sl_ban_cate:Q', axis = alt.Axis(values=list(range(0, 300, 20)))),
+    #         text=alt.Text('sum(sl_ban_cate):Q', format=',.0f')
+    #     )
     
-    line = alt.Chart(data).mark_line().encode(
-                        
-                        y = 'sl_ban' + ':Q')
+    # line = fig.mark_line(color='red').encode(
+    #                     y = 'sl_ban' + ':Q')
     
-    return fig, text, line
+    return fig, line
 
 def create_line_chart(data, x, y, measure_delta, cate = None, sorting = False):
     hover = alt.selection_single(
