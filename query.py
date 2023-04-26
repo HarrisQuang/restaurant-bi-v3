@@ -19,11 +19,11 @@ class Query:
     }
     get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days = '''
                                                                         select *
-                                                                        from (SELECT ngay_number, ngay_filter, ten_mon, sl_ban, float8(tong) tong, 'KM' main_cate,
+                                                                        from (SELECT ngay_number, ngay_filter, ngay, ten_mon, sl_ban, float8(tong) tong, 'KM' main_cate,
                                                                         sl_ban_km sl_ban_cate, float8(tong_km) tong_cate, percent_sl_ban_km percent_sl, percent_tong_km percent_tong
                                                                         FROM quantity_sales_dishes_vegan_day
                                                                         union all
-                                                                        SELECT ngay_number, ngay_filter, ten_mon, sl_ban, float8(tong) tong, 'Not KM' main_cate,
+                                                                        SELECT ngay_number, ngay_filter, ngay, ten_mon, sl_ban, float8(tong) tong, 'Not KM' main_cate,
                                                                         sl_ban_ko_km sl_ban_cate, float8(tong_ko_km) tong_cate, percent_sl_ban_ko_km percent_sl, percent_tong_ko_km percent_tong
                                                                         FROM quantity_sales_dishes_vegan_day) tbl
                                                                         where tbl.ngay_filter in %s and tbl.ten_mon = '%s' order by ngay_number
