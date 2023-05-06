@@ -81,7 +81,7 @@ with tab1:
             fig = utils.create_line_chart(data = sell_quantity_sales_dishes_vegan_day_tbl_final_df, x = 'Ngày', y = 'Số phần bán', measure_delta = measure_delta, cate = 'Tên món')
             st.altair_chart(fig, use_container_width=True)
         
-        st.markdown("### Số lượng được khuyến mãi")
+        st.markdown("### Số phần đã bán trên app (chiết khấu)")
         
         with st.form(key='form-chon-1-mon-an'):
             col1, col2 = st.columns(2)
