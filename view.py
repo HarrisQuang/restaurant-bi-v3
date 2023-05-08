@@ -98,9 +98,10 @@ with tab1:
             st.table(sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day_df.style.format({'Số lượng': '{:.0f}', 'Doanh thu': '{:,.0f}'}))
         else:
             sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days(selected_day, sltd_dish)
-            fig = px.bar(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x='ngay_filter', y='sl_ban_cate', 
-                         color='main_cate', hover_data=['tong_cate', 'percent_sl', 'percent_tong'], barmode = 'group').update_xaxes(tickangle=90).add_traces(
-                        px.line(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x="ngay_filter", y="sl_ban").update_traces(showlegend=True, name="Sl tổng").update_layout(bargap=0.1).data
+            sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_wd.generate_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_final_df(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df)
+            fig = px.bar(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x='Ngày', y='Số lượng bán', 
+                         color='Phân loại', hover_data=['Tên món', 'Doanh thu', 'Phần trăm số lượng', 'Phần trăm doanh thu'], barmode = 'group').update_xaxes(tickangle=90).add_traces(
+                        px.line(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x="Ngày", y="Tổng số lượng bán", hover_data=['Doanh thu', 'Tên món']).update_traces(showlegend=True, name="Tổng").update_layout(bargap=0.1).data
                         )
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
             

@@ -118,6 +118,11 @@ class WranglingData:
         df = df.drop('flag', axis = 1)
         return df
     
+    def generate_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_final_df(self, df):
+        df.columns = ['ngay_number', 'Ngày', 'ngay', 'Tên món', 'Tổng số lượng bán', 'Tổng doanh thu', 'Phân loại',
+                        'Số lượng bán', 'Doanh thu', 'Phần trăm số lượng', 'Phần trăm doanh thu']
+        return df
+    
     def generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(self, df):
         df['xep_hang_sl_ban'] = df['xep_hang_sl_ban'].astype('int')
         df = df.groupby(['ngay_filter', 'xep_hang_sl_ban'], as_index=False).agg({'ten_mon': ', '.join, 'sl_ban': np.max})
