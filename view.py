@@ -40,6 +40,8 @@ with tab1:
             submitted = st.form_submit_button('Thực hiện')
         if not selected_day:
             selected_day = [ngay_filter_list[-1]]
+            
+        st.markdown("### Doanh thu bán hàng")
         
         st.markdown("### Số đơn hàng đã bán")
         
