@@ -126,7 +126,7 @@ class WranglingData:
     def generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(self, df):
         df['xep_hang_sl_ban'] = df['xep_hang_sl_ban'].astype('int')
         df = df.groupby(['ngay_filter', 'xep_hang_sl_ban'], as_index=False).agg({'ten_mon': ', '.join, 'sl_ban': np.max})
-        df['value_pivot'] = df['ten_mon'] + ' (' + df['sl_ban'].astype('str') + ')'
+        df['value_pivot'] = df['ten_mon'] + ' (' + df['sl_ban'].astype('int').astype('str') + ' phần)'
         df = df.pivot_table(values='value_pivot', index='xep_hang_sl_ban', columns='ngay_filter', aggfunc = np.max)
         return df
     
@@ -134,7 +134,7 @@ class WranglingData:
         df['xep_hang_tong'] = df['xep_hang_tong'].astype('int')
         df['tong'] = df['tong'].apply(lambda x: '{:,.0f}'.format(x))
         df = df.groupby(['ngay_filter', 'xep_hang_tong'], as_index=False).agg({'ten_mon': ', '.join, 'tong': np.max})
-        df['value_pivot'] = df['ten_mon'] + ' (' + df['tong'].astype('str') + ')'
+        df['value_pivot'] = df['ten_mon'] + ' (' + df['tong'].astype('str') + 'đ)'
         df = df.pivot_table(values='value_pivot', index='xep_hang_tong', columns='ngay_filter', aggfunc = np.max)
         return df
     
@@ -157,6 +157,8 @@ class WranglingData:
     def generate_sale_off_quantity_sales_dishes_vegan_day_tbl_single_day_df(self, df):
         df.columns = ['Ngày', 'Tên món', 'Số lượng', 'Doanh thu', 
         'Số lượng có KM', 'Số lượng ko KM', 'Doanh thu có KM', 'Doanh thu ko KM' ]
+        for col in ['Số lượng có KM', 'Số lượng ko KM', 'Doanh thu có KM', 'Doanh thu ko KM']:
+            df[col] = df[col].apply(lambda x: utils.add_percent_symbol(x))
         return df
     
     def generate_sale_off_quantity_sales_dishes_vegan_day_tbl_melting_df(self, df):

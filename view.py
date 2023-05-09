@@ -104,10 +104,7 @@ with tab1:
                         px.line(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x="Ngày", y="Tổng số lượng bán", hover_data=['Doanh thu', 'Tên món']).update_traces(showlegend=True, name="Tổng").update_layout(bargap=0.1).data
                         )
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
-            
-            
-            
-                    
+                       
         st.markdown("### Xếp hạng món bán chạy")
         
         col1, col2 = st.columns(2)

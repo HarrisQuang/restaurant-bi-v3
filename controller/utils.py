@@ -100,6 +100,12 @@ def create_line_chart(data, x, y, measure_delta, cate = None, sorting = False):
     )
     return (lines + points + tooltips).interactive()
 
+def add_percent_symbol(str):
+    str = list(str)
+    str[-1] = '%)'
+    new_str = ''.join(str)
+    return new_str
+
 def makeup_percentage_change(df, makeup_cols):
     for el in makeup_cols:
         temp = []
