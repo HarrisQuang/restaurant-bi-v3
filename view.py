@@ -8,6 +8,7 @@ sys.path.append(path)
 import controller.data_warehouse as dw
 import controller.utils as utils
 import plotly.express as px
+import plotly.graph_objects as go
 
 with open('config.json', "r", encoding='utf-8') as f:
     data = json.loads(f.read())
@@ -101,10 +102,16 @@ with tab1:
         else:
             sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_qrdb.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days(selected_day, sltd_dish)
             sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = dw_wd.generate_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_final_df(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df)
-            fig = px.bar(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x='Ngày', y='Số lượng bán', 
-                         color='Phân loại', hover_data=['Tên món', 'Doanh thu', 'Phần trăm số lượng', 'Phần trăm doanh thu'], barmode = 'group').update_xaxes(tickangle=90).add_traces(
-                        px.line(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x="Ngày", y="Tổng số lượng bán", hover_data=['Doanh thu', 'Tên món']).update_traces(showlegend=True, name="Tổng").update_layout(bargap=0.1).data
-                        )
+            fig = go.Figure(
+                data = [
+                    go.Bar(x=sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df['Ngày'], y=sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df['Số lượng bán'], 
+                         ),
+                ]
+            )
+            # fig = px.bar(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x='Ngày', y='Số lượng bán', 
+            #              color='Phân loại', hover_data=['Tên món', 'Doanh thu', 'Phần trăm số lượng', 'Phần trăm doanh thu'], barmode = 'group').update_xaxes(tickangle=90).add_traces(
+            #             px.line(sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df, x="Ngày", y="Tổng số lượng bán", hover_data=['Doanh thu', 'Tên món']).update_traces(showlegend=True, name="Tổng").update_layout(bargap=0.1).data
+            #             )
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
                        
         st.markdown("### Xếp hạng món bán chạy")
