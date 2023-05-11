@@ -43,7 +43,8 @@ with tab1:
             selected_day = [ngay_filter_list[-1]]
             
         st.markdown("### Doanh thu bán hàng")
-        
+        all_finance_vegan_day_tbl_with_df = dw_qrdb.get_all_finance_vegan_day_tbl_with(selected_day)
+
         
         st.markdown("### Số đơn hàng đã bán")
         
