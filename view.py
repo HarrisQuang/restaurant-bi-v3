@@ -43,59 +43,23 @@ with tab1:
             selected_day = [ngay_filter_list[-1]]
             
         st.markdown("### Doanh thu bán hàng")
-        all_finance_vegan_day_tbl_with_df = dw_qrdb.get_all_finance_vegan_day_tbl_with(selected_day)
-        fig = go.Figure(
-            data = [
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['tai_quan'],
-                    offsetgroup=0
-                ),
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['grab'],
-                    offsetgroup=0,
-                    base = all_finance_vegan_day_tbl_with_df['tai_quan']
-                ),
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['baemin'],
-                    offsetgroup=0,
-                    base = all_finance_vegan_day_tbl_with_df['tai_quan']
-                ),
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['sp_food'],
-                    offsetgroup=0,
-                    base = all_finance_vegan_day_tbl_with_df['tai_quan']
-                ),
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['chi_phi'],
-                    offsetgroup=1,
-                ),
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['ck_grab'],
-                    offsetgroup=1,
-                ),
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['ck_baemin'],
-                    offsetgroup=1,
-                ),
-                go.Bar(
-                    x = all_finance_vegan_day_tbl_with_df['ngay_filter'],
-                    y = all_finance_vegan_day_tbl_with_df['ck_sp_food'],
-                    offsetgroup=1,
-                )
-            ]
+        unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_unpivot_finance_vegan_day_tbl_with(selected_day)
+        fig = go.Figure()
+        fig.update_layout(
+            template="simple_white",
+            xaxis=dict(title_text="Ngày"),
+            yaxis=dict(title_text="Loại"),
+            barmode="stack",
         )
-        fig.update_layout(barmode='overlay')
+        colors = ["#01A84B", "#01A84B", "#E24A2C", "#939496", "#E24A2C", "#4BC8C4", "#4BC8C4"]
+        for r, c in zip(['Grab', 'Ck Grab', 'Sp Food', 'Tai Quan', 'Ck Sp Food', 'Ck Baemin', 'Baemin'], colors):
+            plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == r]
+            fig.add_trace(
+                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c),
+            )
         st.plotly_chart(fig, theme="streamlit", use_container_width=True)
         
-        st.table(all_finance_vegan_day_tbl_with_df)
-        
+        st.table(unpivot_finance_vegan_day_tbl_with_df)
         
         st.markdown("### Số đơn hàng đã bán")
         

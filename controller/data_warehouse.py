@@ -47,15 +47,15 @@ class QueryDB:
             result = self.connection.execute(text(query.get_total_order_orders_vegan_day_tbl_with['multi_days'] % (ngay_filter_list,)))
         total_order_orders_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
         return total_order_orders_vegan_day_tbl_with_df
-    
-    def get_all_finance_vegan_day_tbl_with(self, ngay_filter_list):
+      
+    def get_unpivot_finance_vegan_day_tbl_with(self, ngay_filter_list):
         ngay_filter_list = tuple(ngay_filter_list)
         if len(ngay_filter_list) == 1:
-            result = self.connection.execute(text(query.get_all_finance_vegan_day_tbl_with['single_day'] % (ngay_filter_list[0])))
+            result = self.connection.execute(text(query.get_unpivot_finance_vegan_day_tbl_with['single_day'] % (ngay_filter_list[0])))
         else:
-            result = self.connection.execute(text(query.get_all_finance_vegan_day_tbl_with['multi_days'] % (ngay_filter_list,)))
-        all_finance_vegan_day_tbl_with = pd.DataFrame(result.fetchall())
-        return all_finance_vegan_day_tbl_with
+            result = self.connection.execute(text(query.get_unpivot_finance_vegan_day_tbl_with['multi_days'] % (ngay_filter_list,)))
+        unpivot_finance_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
+        return unpivot_finance_vegan_day_tbl_with_df
     
     def get_sell_quantity_sales_dishes_vegan_day_tbl_with(self, ngay_filter_list, final_selected_dish_list):
         ngay_filter_list = tuple(ngay_filter_list)
