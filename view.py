@@ -55,12 +55,10 @@ with tab1:
         for r, c in zip(['Grab', 'Ck Grab', 'Sp Food', 'Tai Quan', 'Ck Sp Food', 'Ck Baemin', 'Baemin'], colors):
             plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == r]
             fig.add_trace(
-                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c),
+                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, hovertext  = [plot_df.value.values, plot_df.pct]),
             )
         st.plotly_chart(fig, theme="streamlit", use_container_width=True)
-        
-        st.table(unpivot_finance_vegan_day_tbl_with_df)
-        
+                
         st.markdown("### Số đơn hàng đã bán")
         
         total_order_orders_vegan_day_tbl_with_df = dw_qrdb.get_total_order_orders_vegan_day_tbl_with(selected_day)
