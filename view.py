@@ -59,8 +59,15 @@ with tab1:
             # )
             fig.add_trace(
                 go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, customdata = np.stack((plot_df.pct, plot_df.main_cate), axis=-1), 
-                       hovertemplate='<b> Ngày: %{x[0]} <b> <br> Percentage: %{customdata[1]} <br> Loại: %{customdata[0]}%'),
+                       hovertemplate='<b> Ngày: %{x[0]} <b> <br> Giá trị: %{y:,.0f}đ <br> Percentage: %{customdata[0]}%'),
             )
+        for annotation in ['Tong doanh thu', 'Chi chiet khau']:
+            plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == annotation]
+            for i, val in enumerate(plot_df.value):
+                fig.add_annotation(x=[plot_df.ngay_filter.iloc[i], plot_df.main_cate.iloc[i]], y=val,
+                    text='{:,.0f} đ'.format(val), showarrow=False,
+                    yshift=10)
+                
         st.plotly_chart(fig, theme="streamlit", use_container_width=True)
                 
         st.markdown("### Số đơn hàng đã bán")
