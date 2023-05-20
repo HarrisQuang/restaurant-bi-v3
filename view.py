@@ -54,8 +54,12 @@ with tab1:
         colors = ["#01A84B", "#01A84B", "#E24A2C", "#939496", "#E24A2C", "#4BC8C4", "#4BC8C4"]
         for r, c in zip(['Grab', 'Ck Grab', 'Sp Food', 'Tai Quan', 'Ck Sp Food', 'Ck Baemin', 'Baemin'], colors):
             plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == r]
+            # fig.add_trace(
+            #     go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, hovertext = plot_df.pct.values.astype('str') + plot_df.main_cate.values, hoverinfo='y+text+name'),
+            # )
             fig.add_trace(
-                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, hovertext = plot_df.pct.values.astype('str') + plot_df.main_cate.values, hoverinfo='y+text+name'),
+                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, customdata = np.stack((plot_df.pct, plot_df.main_cate), axis=-1), 
+                       hovertemplate='<b> Ngày: %{x[0]} <b> <br> Percentage: %{customdata[1]} <br> Loại: %{customdata[0]}%'),
             )
         st.plotly_chart(fig, theme="streamlit", use_container_width=True)
                 
