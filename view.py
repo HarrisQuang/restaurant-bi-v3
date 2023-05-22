@@ -58,8 +58,8 @@ with tab1:
             #     go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, hovertext = plot_df.pct.values.astype('str') + plot_df.main_cate.values, hoverinfo='y+text+name'),
             # )
             fig.add_trace(
-                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, customdata = np.stack((plot_df.pct, plot_df.main_cate), axis=-1), 
-                       hovertemplate='<b> Ngày: %{x[0]} <b> <br> Giá trị: %{y:,.0f}đ <br> Phần trăm: %{customdata[0]}%'),
+                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, customdata = np.stack((plot_df.main_cate, plot_df.pct), axis=-1), 
+                       hovertemplate='<b> Ngày: %{x[0]} <b> <br> Giá trị: %{y:,.0f}đ <br> Phần trăm: %{customdata[1]}%'),
             )
         for annotation in ['Tong doanh thu', 'Chi chiet khau']:
             plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == annotation]
