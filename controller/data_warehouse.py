@@ -95,7 +95,28 @@ class QueryDB:
         result = self.connection.execute(text(query.get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days % (ngay_filter_list, sltd_dish)))
         sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df = pd.DataFrame(result.fetchall())
         return sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days_df
-        
+    
+    def get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_single_day(self, ngay_filter_list, sltd_component):
+        ngay_filter_list = tuple(ngay_filter_list)
+        result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_single_day % (ngay_filter_list[0], sltd_component)))
+        value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_single_day_df = pd.DataFrame(result.fetchall())
+        return value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_single_day_df
+    
+    def get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_multi_days(self, ngay_filter_list, sltd_component):
+        ngay_filter_list = tuple(ngay_filter_list)
+        result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_multi_days % (ngay_filter_list, sltd_component)))
+        value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_multi_days_df = pd.DataFrame(result.fetchall())
+        return value_pct_THU_unpivot_finance_vegan_day_tbl_with_sub_cate_multi_days_df
+    
+    def get_value_pct_THU_unpivot_finance_vegan_day_tbl_with(self, ngay_filter_list, sltd_component):
+        ngay_filter_list = tuple(ngay_filter_list)
+        if len(ngay_filter_list) == 1:
+            result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with["single_day_with_sub_cate"] % (ngay_filter_list[0], sltd_component)))
+        else:
+            result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with["multi_days_with_sub_cate"] % (ngay_filter_list, sltd_component)))
+        value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
+        return value_pct_THU_unpivot_finance_vegan_day_tbl_with_df
+    
 class WranglingData:
     def calculate_percentage_change(self, df, orgin, criteria, grouping = True):
         temp = []
@@ -170,6 +191,6 @@ class WranglingData:
             df[col] = df[col].apply(lambda x: utils.add_percent_symbol(x))
         return df
     
-    def generate_sale_off_quantity_sales_dishes_vegan_day_tbl_melting_df(self, df):
-        
-        pass
+    def generate_value_pct_THU_unpivot_finance_vegan_day_tbl_final_df(self, df):
+        df.columns = ['Ngày', 'Giá trị', 'Phần trăm']
+        return df

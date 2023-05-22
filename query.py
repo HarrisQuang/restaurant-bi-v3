@@ -33,3 +33,7 @@ class Query:
                                                                         where tbl.ngay_filter in %s and tbl.ten_mon = '%s' order by ngay_number
                                                                         '''
     get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_single_day = "SELECT ngay_filter, ten_mon, sl_ban, tong, sl_ban_km_display, sl_ban_ko_km_display, tong_km_display, tong_ko_km_display FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and ten_mon = '%s' order by ngay_number"
+    get_value_pct_THU_unpivot_finance_vegan_day_tbl_with = {
+        "single_day_with_sub_cate": "select ngay_filter, value, pct from unpivot_finance_vegan_day where ngay_filter = '%s' and sub_cate = '%s' order by ngay_number",
+        "multi_days_with_sub_cate": "select ngay_filter, value, pct from unpivot_finance_vegan_day where ngay_filter in '%s' and sub_cate = '%s' order by ngay_number"
+    }

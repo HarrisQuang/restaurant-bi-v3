@@ -42,33 +42,54 @@ with tab1:
         if not selected_day:
             selected_day = [ngay_filter_list[-1]]
             
-        st.markdown("### Doanh thu bán hàng")
+        st.markdown("### Doanh thu, chi phí bán hàng")
         unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_unpivot_finance_vegan_day_tbl_with(selected_day)
-        fig = go.Figure()
-        fig.update_layout(
-            template="simple_white",
-            xaxis=dict(title_text="Ngày"),
-            yaxis=dict(title_text="Loại"),
-            barmode="stack",
-        )
-        colors = ["#01A84B", "#01A84B", "#E24A2C", "#E24A2C", "#4BC8C4", "#4BC8C4", "#939496"]
-        for r, c in zip(['Grab', 'Ck Grab', 'Sp Food', 'Ck Sp Food', 'Ck Baemin', 'Baemin', 'Tai Quan'], colors):
-            plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == r]
-            # fig.add_trace(
-            #     go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, hovertext = plot_df.pct.values.astype('str') + plot_df.main_cate.values, hoverinfo='y+text+name'),
-            # )
-            fig.add_trace(
-                go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, customdata = np.stack((plot_df.main_cate, plot_df.pct), axis=-1), 
-                       hovertemplate='<b> Ngày: %{x[0]} <b> <br> Giá trị: %{y:,.0f}đ <br> Phần trăm: %{customdata[1]}%'),
+        if unpivot_finance_vegan_day_tbl_with_df.empty:
+            st.warning('Không có dữ liệu với ngày được chọn', icon="⚠️")
+        else:
+            fig = go.Figure()
+            fig.update_layout(
+                template="simple_white",
+                xaxis=dict(title_text="Ngày"),
+                yaxis=dict(title_text="Loại"),
+                barmode="stack",
             )
-        for annotation in ['Tong doanh thu', 'Chi chiet khau']:
-            plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == annotation]
-            for i, val in enumerate(plot_df.value):
-                fig.add_annotation(x=[plot_df.ngay_filter.iloc[i], plot_df.main_cate.iloc[i]], y=val,
-                    text='{:,.0f} đ'.format(val), showarrow=False,
-                    yshift=10)
-                
-        st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+            colors = ["#01A84B", "#01A84B", "#E24A2C", "#E24A2C", "#4BC8C4", "#4BC8C4", "#939496"]
+            for r, c in zip(['Grab', 'Ck Grab', 'Sp Food', 'Ck Sp Food', 'Ck Baemin', 'Baemin', 'Tai Quan'], colors):
+                plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == r]
+                # fig.add_trace(
+                #     go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, hovertext = plot_df.pct.values.astype('str') + plot_df.main_cate.values, hoverinfo='y+text+name'),
+                # )
+                fig.add_trace(
+                    go.Bar(x=[plot_df.ngay_filter, plot_df.main_cate], y=plot_df.value, name=r, marker_color=c, customdata = np.stack((plot_df.main_cate, plot_df.pct), axis=-1), 
+                        hovertemplate='<b> Ngày: %{x[0]} <b> <br> Giá trị: %{y:,.0f}đ <br> Phần trăm: %{customdata[1]}%'),
+                )
+            for annotation in ['Tong doanh thu', 'Chi chiet khau']:
+                plot_df = unpivot_finance_vegan_day_tbl_with_df[unpivot_finance_vegan_day_tbl_with_df.sub_cate == annotation]
+                for i, val in enumerate(plot_df.value):
+                    fig.add_annotation(x=[plot_df.ngay_filter.iloc[i], plot_df.main_cate.iloc[i]], y=val,
+                        text='{:,.0f} đ'.format(val), showarrow=False,
+                        yshift=10)
+                    
+            st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+        
+        st.markdown("### Doanh thu thành phần mỗi ngày chay")
+        component_list = data['revenue_component_list']
+        with st.form(key='form-chon-1-dthu-thanh-phan'):
+            col1, col2 = st.columns(2)
+            with col1:
+                sltd_component= st.selectbox("Chọn thành phần", component_list , index=len(component_list )-1)
+            submitted = st.form_submit_button('Thực hiện')    
+        if sltd_component == '...':
+            sltd_component = 'Tai Quan'
+        
+        value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with(selected_day, sltd_component)
+        value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = dw_wd.generate_value_pct_THU_unpivot_finance_vegan_day_tbl_final_df(value_pct_THU_unpivot_finance_vegan_day_tbl_with_df)
+        st.info(f'Bạn đã chọn: {sltd_component}', icon="ℹ️")
+        if len(selected_day) == 1:
+            st.table(value_pct_THU_unpivot_finance_vegan_day_tbl_with_df.style.format({'Giá trị': '{:,.0f} đ', 'Phần trăm': '{:,.2f} %'}))
+        else:
+            st.table(value_pct_THU_unpivot_finance_vegan_day_tbl_with_df)
                 
         st.markdown("### Số đơn hàng đã bán")
         
