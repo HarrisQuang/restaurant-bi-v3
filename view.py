@@ -9,6 +9,7 @@ import controller.data_warehouse as dw
 import controller.utils as utils
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 with open('config.json', "r", encoding='utf-8') as f:
     data = json.loads(f.read())
@@ -84,12 +85,32 @@ with tab1:
             sltd_component = 'Tai Quan'
         
         value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with(selected_day, sltd_component)
-        value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = dw_wd.generate_value_pct_THU_unpivot_finance_vegan_day_tbl_final_df(value_pct_THU_unpivot_finance_vegan_day_tbl_with_df)
-        st.info(f'Bạn đã chọn: {sltd_component}', icon="ℹ️")
-        if len(selected_day) == 1:
-            st.table(value_pct_THU_unpivot_finance_vegan_day_tbl_with_df.style.format({'Giá trị': '{:,.0f} đ', 'Phần trăm': '{:,.2f} %'}))
+        if value_pct_THU_unpivot_finance_vegan_day_tbl_with_df.empty:
+            st.warning('Không có dữ liệu với ngày được chọn', icon="⚠️")
         else:
-            st.table(value_pct_THU_unpivot_finance_vegan_day_tbl_with_df)
+            value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = dw_wd.generate_value_pct_THU_unpivot_finance_vegan_day_tbl_final_df(value_pct_THU_unpivot_finance_vegan_day_tbl_with_df)
+            plot_df = value_pct_THU_unpivot_finance_vegan_day_tbl_with_df
+            st.info(f'Bạn đã chọn: {sltd_component}', icon="ℹ️")
+            if len(selected_day) == 1:
+                st.table(plot_df.style.format({'Giá trị': '{:,.0f} đ', 'Phần trăm': '{:,.2f} %'}))
+            else:
+                fig = make_subplots(specs=[[{"secondary_y": True}]])
+                fig.update_layout(
+                    template="simple_white",
+                )
+                fig.update_yaxes(title_text="<b>Giá trị</b>", secondary_y=False)
+                fig.update_yaxes(title_text="<b>Phần trăm</b>", secondary_y=True)
+                fig.add_trace(
+                    go.Bar(x=plot_df['Ngày'], y=plot_df['Giá trị'], name=sltd_component, 
+                        hovertemplate='<b> Ngày: %{x} <b> <br> Giá trị: %{y:,.0f}đ'),
+                    secondary_y=False,
+                )
+                fig.add_trace(
+                    go.Scatter(x=plot_df['Ngày'], y=plot_df['Phần trăm'], name=sltd_component, 
+                        hovertemplate='<b> Ngày: %{x} <b> <br> Phần trăm: %{y:,.2f}%'),
+                    secondary_y=True,
+                )
+                st.plotly_chart(fig, theme="streamlit", use_container_width=True)
                 
         st.markdown("### Số đơn hàng đã bán")
         
