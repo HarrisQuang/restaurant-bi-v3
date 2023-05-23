@@ -79,7 +79,7 @@ with tab1:
         with st.form(key='form-chon-1-dthu-thanh-phan'):
             col1, col2 = st.columns(2)
             with col1:
-                sltd_component= st.selectbox("Chọn thành phần", component_list, index=len(component_list )-1)
+                sltd_component= st.selectbox("Chọn loại doanh thu", component_list, index=len(component_list)-1)
             submitted = st.form_submit_button('Thực hiện')
         
         value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with(selected_day, sltd_component)
@@ -111,14 +111,56 @@ with tab1:
                 st.plotly_chart(fig, theme="streamlit", use_container_width=True)
         
         st.markdown("### Doanh thu các thành phần")
+        value_type = ['Giá trị', 'Phần trăm']
         with st.form(key='form-chon-dthu-cac-thanh-phan'):
             col1, col2 = st.columns(2)
             with col1:
                 sltd_component = st.multiselect('Chọn loại doanh thu', component_list)
+            with col2:
+                sltd_type = st.selectbox('Chọn kiểu hiển thị', value_type, index=0)
             submitted = st.form_submit_button('Thực hiện')
         if not sltd_component:
             sltd_component = [component_list[-1]]
-        
+        value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df = dw_qrdb.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_many(selected_day, sltd_component, sltd_type)
+        if value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df.empty:
+            st.warning('Không có dữ liệu với ngày được chọn', icon="⚠️")
+        else:
+            plot_df = value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df
+            st.info(f'Bạn đã chọn: {sltd_component}', icon="ℹ️")
+            if len(selected_day) == 1:
+                plot_df = dw_wd.generate_value_pct_THU_unpivot_finance_vegan_day_tbl_with_value_type_final_df(plot_df, sltd_type)
+                st.table(plot_df)
+            else:
+                fig = go.Figure()
+                fig.update_layout(
+                    template="simple_white",
+                    xaxis=dict(title_text="Ngày"),
+                    yaxis=dict(title_text=sltd_type)
+                )
+                name_color = []
+                if len(sltd_component) == 1:
+                    for r, c in zip(data['revenue_component_list'], data['revenue_component_colors']):
+                        if r == sltd_component[0]:
+                            name_color.append((r, c))
+                else:
+                    for r, c in zip(data['revenue_component_list'], data['revenue_component_colors']):
+                        if r in sltd_component:
+                            name_color.append((r, c))       
+                for r, c in name_color:
+                    plot_df_loop = plot_df[plot_df.sub_cate == r]
+                    if sltd_type == 'Giá trị':
+                        fig.add_trace(
+                            go.Scatter(x=plot_df_loop['ngay_filter'], y=plot_df_loop['value'], name=r, marker_color=c, 
+                            hovertemplate='<b> Ngày: %{x} <b> <br> Giá trị: %{y:,.0f}đ'),
+                        )
+                    else:
+                        fig.add_trace(
+                            go.Scatter(x=plot_df_loop['ngay_filter'], y=plot_df_loop['pct'], name=r, marker_color=c, 
+                            hovertemplate='<b> Ngày: %{x} <b> <br> Phần trăm: %{y:,.2f}%'),
+                        )
+                st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+                
+
         st.markdown("### Số đơn hàng đã bán")
         total_order_orders_vegan_day_tbl_with_df = dw_qrdb.get_total_order_orders_vegan_day_tbl_with(selected_day)
         total_order_orders_vegan_day_tbl_final_df, measure_delta = dw_wd.generate_total_order_orders_vegan_day_tbl_final_df(total_order_orders_vegan_day_tbl_with_df)

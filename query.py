@@ -37,3 +37,9 @@ class Query:
         "single_day_with_sub_cate": "select ngay_filter, value, pct from unpivot_finance_vegan_day where ngay_filter = '%s' and sub_cate = '%s' order by ngay_number",
         "multi_days_with_sub_cate": "select ngay_filter, value, pct from unpivot_finance_vegan_day where ngay_filter in %s and sub_cate = '%s' order by ngay_number"
     }
+    get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_many = {
+        "single_day_single_component": "select ngay_filter, sub_cate, value, pct from unpivot_finance_vegan_day where ngay_filter = '%s' and sub_cate = '%s' order by ngay_number",
+        "single_day_multi_components": "select ngay_filter, sub_cate, value, pct from unpivot_finance_vegan_day where ngay_filter = '%s' and sub_cate in %s order by ngay_number",
+        "multi_days_single_component": "select ngay_filter, sub_cate, value, pct from unpivot_finance_vegan_day where ngay_filter in %s and sub_cate = '%s' order by ngay_number",
+        "multi_days_multi_components": "select ngay_filter, sub_cate, value, pct from unpivot_finance_vegan_day where ngay_filter in %s and sub_cate in %s order by ngay_number"
+    }

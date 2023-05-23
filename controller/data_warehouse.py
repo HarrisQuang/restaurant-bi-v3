@@ -117,6 +117,24 @@ class QueryDB:
         value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
         return value_pct_THU_unpivot_finance_vegan_day_tbl_with_df
     
+    def get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_many(self, ngay_filter_list, sltd_component, sltd_type):
+        ngay_filter_list = tuple(ngay_filter_list)
+        sltd_component = tuple(sltd_component)
+        if len(ngay_filter_list) == 1 and len(sltd_component) == 1:
+            result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_many["single_day_single_component"] % (ngay_filter_list[0], sltd_component[0])))
+        elif len(ngay_filter_list) == 1 and len(sltd_component) > 1:
+            result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_many["single_day_multi_components"] % (ngay_filter_list[0], sltd_component)))
+        elif len(ngay_filter_list) > 1 and len(sltd_component) == 1:
+            result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_many["multi_days_single_component"] % (ngay_filter_list, sltd_component[0])))
+        elif len(ngay_filter_list) > 1 and len(sltd_component) > 1:
+            result = self.connection.execute(text(query.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with_many["multi_days_multi_components"] % (ngay_filter_list, sltd_component)))
+        value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df = pd.DataFrame(result.fetchall())
+        if sltd_type == 'Giá trị':
+            value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df = value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df.loc[:,~value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df.columns.isin(['pct'])]
+        else:
+            value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df = value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df.loc[:,~value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df.columns.isin(['value'])]
+        return value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df
+    
 class WranglingData:
     def calculate_percentage_change(self, df, orgin, criteria, grouping = True):
         temp = []
@@ -193,4 +211,13 @@ class WranglingData:
     
     def generate_value_pct_THU_unpivot_finance_vegan_day_tbl_final_df(self, df):
         df.columns = ['Ngày', 'Giá trị', 'Phần trăm']
+        return df
+    
+    def generate_value_pct_THU_unpivot_finance_vegan_day_tbl_with_value_type_final_df(self, df, sltd_type):
+        if sltd_type == 'Giá trị':
+            df.columns = ['Ngày', 'Loại doanh thu', 'Giá trị']
+            df = df.style.format({'Giá trị': '{:,.0f} đ'})
+        else:
+            df.columns = ['Ngày', 'Loại doanh thu', 'Phần trăm']
+            df = df.style.format({'Phần trăm': '{:,.2f} %'})
         return df
