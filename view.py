@@ -74,15 +74,13 @@ with tab1:
                     
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
         
-        st.markdown("### Doanh thu thành phần mỗi ngày chay")
+        st.markdown("### Doanh thu thành phần")
         component_list = data['revenue_component_list']
         with st.form(key='form-chon-1-dthu-thanh-phan'):
             col1, col2 = st.columns(2)
             with col1:
-                sltd_component= st.selectbox("Chọn thành phần", component_list , index=len(component_list )-1)
-            submitted = st.form_submit_button('Thực hiện')    
-        if sltd_component == '...':
-            sltd_component = 'Tai Quan'
+                sltd_component= st.selectbox("Chọn thành phần", component_list, index=len(component_list )-1)
+            submitted = st.form_submit_button('Thực hiện')
         
         value_pct_THU_unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_value_pct_THU_unpivot_finance_vegan_day_tbl_with(selected_day, sltd_component)
         if value_pct_THU_unpivot_finance_vegan_day_tbl_with_df.empty:
@@ -111,9 +109,17 @@ with tab1:
                     secondary_y=True,
                 )
                 st.plotly_chart(fig, theme="streamlit", use_container_width=True)
-                
-        st.markdown("### Số đơn hàng đã bán")
         
+        st.markdown("### Doanh thu các thành phần")
+        with st.form(key='form-chon-dthu-cac-thanh-phan'):
+            col1, col2 = st.columns(2)
+            with col1:
+                sltd_component = st.multiselect('Chọn loại doanh thu', component_list)
+            submitted = st.form_submit_button('Thực hiện')
+        if not sltd_component:
+            sltd_component = [component_list[-1]]
+        
+        st.markdown("### Số đơn hàng đã bán")
         total_order_orders_vegan_day_tbl_with_df = dw_qrdb.get_total_order_orders_vegan_day_tbl_with(selected_day)
         total_order_orders_vegan_day_tbl_final_df, measure_delta = dw_wd.generate_total_order_orders_vegan_day_tbl_final_df(total_order_orders_vegan_day_tbl_with_df)
         
