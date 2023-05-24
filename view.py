@@ -225,19 +225,33 @@ with tab1:
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
                        
         st.markdown("### Xếp hạng món bán chạy")
-        
         col1, col2 = st.columns(2)
         with col1:
-            top_quantity = st.slider("Top SL:", 1, 20, 3)
-        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, top_quantity)
-        ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
+            top_quantity = st.slider("Top SL:", 1, 20, 3, key='top_best_quantity')
+        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, top_quantity)
+        ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_best_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
         st.table(ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df)
         
         col3, col4 = st.columns(2)
         with col3:
-            top_revenue = st.slider("Top Doanh thu:", 1, 20, 3)
-        ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
-        ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)        
+            top_revenue = st.slider("Top Doanh thu:", 1, 20, 3, key='top_best_revenue')
+        ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
+        ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_best_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)        
+        st.table(ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df)
+        
+        st.markdown("### Xếp hạng món bán chậm")
+        col1, col2 = st.columns(2)
+        with col1:
+            top_quantity = st.slider("Top SL:", 1, 20, 3, key='top_worst_quantity')
+        ranking_quantity_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, top_quantity)
+        ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_worst_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(ranking_quantity_sales_dishes_vegan_day_tbl_with_df)
+        st.table(ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df)
+        
+        col3, col4 = st.columns(2)
+        with col3:
+            top_revenue = st.slider("Top Doanh thu:", 1, 20, 3, key='top_worst_revenue')
+        ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
+        ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_worst_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)        
         st.table(ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df)
 
 with tab2:

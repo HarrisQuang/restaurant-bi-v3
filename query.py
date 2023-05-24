@@ -15,11 +15,17 @@ class Query:
         "single_day_multi_dishes": "SELECT ngay_number, ngay_filter, ten_mon, sl_ban FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and ten_mon in %s order by ten_mon, ngay_number",
         "multi_days_single_dish": "SELECT ngay_number, ngay_filter, ten_mon, sl_ban FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and ten_mon = '%s' order by ten_mon, ngay_number"
     }
-    get_ranking_quantity_sales_dishes_vegan_day_tbl_with = {
-        "single_day_with_xep_hang_sl_ban": "SELECT ngay_filter, ten_mon, sl_ban, xep_hang_sl_ban FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and xep_hang_sl_ban <= %s order by xep_hang_sl_ban",
-        "multi_days_with_xep_hang_sl_ban": "SELECT ngay_filter, ten_mon, sl_ban, xep_hang_sl_ban FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_sl_ban <= %s order by xep_hang_sl_ban",
-        "single_day_with_xep_hang_tong": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and xep_hang_tong <= %s order by xep_hang_tong",
-        "multi_days_with_xep_hang_tong": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_tong <= %s order by xep_hang_tong"
+    get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with = {
+        "single_day_with_xep_hang_sl_ban_chay": "SELECT ngay_filter, ten_mon, sl_ban, xep_hang_sl_ban_chay FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and xep_hang_sl_ban_chay <= %s order by xep_hang_sl_ban_chay",
+        "multi_days_with_xep_hang_sl_ban_chay": "SELECT ngay_filter, ten_mon, sl_ban, xep_hang_sl_ban_chay FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_sl_ban_chay <= %s order by xep_hang_sl_ban_chay",
+        "single_day_with_xep_hang_tong_ban_chay": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong_ban_chay FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and xep_hang_tong_ban_chay <= %s order by xep_hang_tong_ban_chay",
+        "multi_days_with_xep_hang_tong_ban_chay": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong_ban_chay FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_tong_ban_chay <= %s order by xep_hang_tong_ban_chay"
+    }
+    get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with = {
+        "single_day_with_xep_hang_sl_ban_cham": "SELECT ngay_filter, ten_mon, sl_ban, xep_hang_sl_ban_cham FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and xep_hang_sl_ban_cham <= %s order by xep_hang_sl_ban_cham",
+        "multi_days_with_xep_hang_sl_ban_cham": "SELECT ngay_filter, ten_mon, sl_ban, xep_hang_sl_ban_cham FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_sl_ban_cham <= %s order by xep_hang_sl_ban_cham",
+        "single_day_with_xep_hang_tong_ban_cham": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong_ban_cham FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' and xep_hang_tong_ban_cham <= %s order by xep_hang_tong_ban_cham",
+        "multi_days_with_xep_hang_tong_ban_cham": "SELECT ngay_filter, ten_mon, tong, xep_hang_tong_ban_cham FROM quantity_sales_dishes_vegan_day where ngay_filter in %s and xep_hang_tong_ban_cham <= %s order by xep_hang_tong_ban_cham"
     }
     get_sale_off_quantity_sales_dishes_vegan_day_tbl_with_multi_days = '''
                                                                         select *

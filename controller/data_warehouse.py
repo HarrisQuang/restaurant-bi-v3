@@ -71,16 +71,29 @@ class QueryDB:
         sell_quantity_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
         return sell_quantity_sales_dishes_vegan_day_tbl_with_df
     
-    def get_ranking_quantity_sales_dishes_vegan_day_tbl_with(self, ngay_filter_list, top_quantity = None, top_revenue = None):
+    def get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with(self, ngay_filter_list, top_quantity = None, top_revenue = None):
         ngay_filter_list = tuple(ngay_filter_list)
         if len(ngay_filter_list) == 1 and top_quantity != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_sl_ban'] % (ngay_filter_list[0], top_quantity)))
+            result = self.connection.execute(text(query.get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_sl_ban_chay'] % (ngay_filter_list[0], top_quantity)))
         elif len(ngay_filter_list) > 1 and top_quantity != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_sl_ban'] % (ngay_filter_list, top_quantity)))
+            result = self.connection.execute(text(query.get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_sl_ban_chay'] % (ngay_filter_list, top_quantity)))
         elif len(ngay_filter_list) == 1 and top_revenue != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_tong'] % (ngay_filter_list[0], top_revenue)))
+            result = self.connection.execute(text(query.get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_tong_ban_chay'] % (ngay_filter_list[0], top_revenue)))
         elif len(ngay_filter_list) > 1 and top_revenue != None:
-            result = self.connection.execute(text(query.get_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_tong'] % (ngay_filter_list, top_revenue)))
+            result = self.connection.execute(text(query.get_best_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_tong_ban_chay'] % (ngay_filter_list, top_revenue)))
+        ranking_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
+        return ranking_sales_dishes_vegan_day_tbl_with_df
+    
+    def get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with(self, ngay_filter_list, top_quantity = None, top_revenue = None):
+        ngay_filter_list = tuple(ngay_filter_list)
+        if len(ngay_filter_list) == 1 and top_quantity != None:
+            result = self.connection.execute(text(query.get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_sl_ban_cham'] % (ngay_filter_list[0], top_quantity)))
+        elif len(ngay_filter_list) > 1 and top_quantity != None:
+            result = self.connection.execute(text(query.get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_sl_ban_cham'] % (ngay_filter_list, top_quantity)))
+        elif len(ngay_filter_list) == 1 and top_revenue != None:
+            result = self.connection.execute(text(query.get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with['single_day_with_xep_hang_tong_ban_cham'] % (ngay_filter_list[0], top_revenue)))
+        elif len(ngay_filter_list) > 1 and top_revenue != None:
+            result = self.connection.execute(text(query.get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with['multi_days_with_xep_hang_tong_ban_cham'] % (ngay_filter_list, top_revenue)))
         ranking_sales_dishes_vegan_day_tbl_with_df = pd.DataFrame(result.fetchall())
         return ranking_sales_dishes_vegan_day_tbl_with_df
     
@@ -171,19 +184,34 @@ class WranglingData:
                         'Số lượng bán', 'Doanh thu', 'Phần trăm số lượng', 'Phần trăm doanh thu']
         return df
     
-    def generate_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(self, df):
-        df['xep_hang_sl_ban'] = df['xep_hang_sl_ban'].astype('int')
-        df = df.groupby(['ngay_filter', 'xep_hang_sl_ban'], as_index=False).agg({'ten_mon': ', '.join, 'sl_ban': np.max})
+    def generate_best_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(self, df):
+        df['xep_hang_sl_ban_chay'] = df['xep_hang_sl_ban_chay'].astype('int')
+        df = df.groupby(['ngay_filter', 'xep_hang_sl_ban_chay'], as_index=False).agg({'ten_mon': ', '.join, 'sl_ban': np.max})
         df['value_pivot'] = df['ten_mon'] + ' (' + df['sl_ban'].astype('int').astype('str') + ' phần)'
-        df = df.pivot_table(values='value_pivot', index='xep_hang_sl_ban', columns='ngay_filter', aggfunc = np.max)
+        df = df.pivot_table(values='value_pivot', index='xep_hang_sl_ban_chay', columns='ngay_filter', aggfunc = np.max)
         return df
     
-    def generate_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(self, df):
-        df['xep_hang_tong'] = df['xep_hang_tong'].astype('int')
+    def generate_best_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(self, df):
+        df['xep_hang_tong_ban_chay'] = df['xep_hang_tong_ban_chay'].astype('int')
         df['tong'] = df['tong'].apply(lambda x: '{:,.0f}'.format(x))
-        df = df.groupby(['ngay_filter', 'xep_hang_tong'], as_index=False).agg({'ten_mon': ', '.join, 'tong': np.max})
+        df = df.groupby(['ngay_filter', 'xep_hang_tong_ban_chay'], as_index=False).agg({'ten_mon': ', '.join, 'tong': np.max})
         df['value_pivot'] = df['ten_mon'] + ' (' + df['tong'].astype('str') + 'đ)'
-        df = df.pivot_table(values='value_pivot', index='xep_hang_tong', columns='ngay_filter', aggfunc = np.max)
+        df = df.pivot_table(values='value_pivot', index='xep_hang_tong_ban_chay', columns='ngay_filter', aggfunc = np.max)
+        return df
+    
+    def generate_worst_ranking_quantity_sales_dishes_vegan_day_tbl_pivot_df(self, df):
+        df['xep_hang_sl_ban_cham'] = df['xep_hang_sl_ban_cham'].astype('int')
+        df = df.groupby(['ngay_filter', 'xep_hang_sl_ban_cham'], as_index=False).agg({'ten_mon': ', '.join, 'sl_ban': np.max})
+        df['value_pivot'] = df['ten_mon'] + ' (' + df['sl_ban'].astype('int').astype('str') + ' phần)'
+        df = df.pivot_table(values='value_pivot', index='xep_hang_sl_ban_cham', columns='ngay_filter', aggfunc = np.max)
+        return df
+    
+    def generate_worst_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(self, df):
+        df['xep_hang_tong_ban_cham'] = df['xep_hang_tong_ban_cham'].astype('int')
+        df['tong'] = df['tong'].apply(lambda x: '{:,.0f}'.format(x))
+        df = df.groupby(['ngay_filter', 'xep_hang_tong_ban_cham'], as_index=False).agg({'ten_mon': ', '.join, 'tong': np.max})
+        df['value_pivot'] = df['ten_mon'] + ' (' + df['tong'].astype('str') + 'đ)'
+        df = df.pivot_table(values='value_pivot', index='xep_hang_tong_ban_cham', columns='ngay_filter', aggfunc = np.max)
         return df
     
     def generate_total_order_orders_vegan_day_tbl_final_df(self, df):
