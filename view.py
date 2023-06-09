@@ -43,6 +43,8 @@ with tab1:
         if not selected_day:
             selected_day = [ngay_filter_list[-1]]
             
+        st.info(f'Bạn đã chọn: {selected_day}', icon="ℹ️")
+        
         st.markdown("### Doanh thu, chi phí bán hàng")
         unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_unpivot_finance_vegan_day_tbl_with(selected_day)
         if unpivot_finance_vegan_day_tbl_with_df.empty:
@@ -253,7 +255,17 @@ with tab1:
         ranking_revenue_sales_dishes_vegan_day_tbl_with_df = dw_qrdb.get_worst_ranking_quantity_sales_dishes_vegan_day_tbl_with(selected_day, None, top_revenue)
         ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df = dw_wd.generate_worst_ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df(ranking_revenue_sales_dishes_vegan_day_tbl_with_df)        
         st.table(ranking_revenue_sales_dishes_vegan_day_tbl_pivot_df)
-
+    
+        st.markdown("### Tổng quan các món")
+        with st.form(key='form-chon-tieu-chi-cac-mon'):
+            col1, col2 = st.columns(2)
+            with col1:
+                sltd_criteria = st.selectbox("Chọn tiêu chí", ['Doanh số', 'Doanh thu'], index=0)
+            with col2:
+                sltd_measure = st.selectbox("Chọn đo lường", ['Tổng cộng', 'Trung bình cộng'], index=0)
+            submitted = st.form_submit_button('Thực hiện')
+        
+    
 with tab2:
     st.title("XEM BÁO CÁO THEO NGÀY")
 
