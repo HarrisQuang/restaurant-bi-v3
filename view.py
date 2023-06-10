@@ -264,9 +264,18 @@ with tab1:
         st.info(f'Bạn đã chọn: {selected_day}, {sltd_criteria}, {sltd_measure}', icon="ℹ️") 
         statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df = dw_qrdb.get_statistics_dishes_quantity_sales_dishes_vegan_tbl_with(selected_day, sltd_criteria, sltd_measure)
         statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df = dw_wd.generate_statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df(statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df, sltd_criteria)
-        st.table(statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df)
-        fig = px.treemap(statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df, path=['Tên món'],values=sltd_criteria, hover_data=["Tỷ trọng"],
-                 )
+        fig = px.treemap(statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df, path=['Tiêu đề','Tên món'],values=sltd_criteria, hover_data=["Tỷ trọng"],
+                 color = sltd_criteria, custom_data=['Tên món'])
+        leaves = (statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df['Tiêu đề'] +'/'+statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df['Tên món']).values
+        customdata = [
+            v.tolist() if fig.data[0].ids[i]
+            in leaves else ""
+            for i, v in enumerate(fig.data[0].customdata)
+        ]
+        customdata = np.array(customdata, dtype=object)
+        template_str = "<b>"+ "%{customdata[0]}" + f"<b> <br> <b>Tỷ trọng {sltd_criteria}<b>: " + "%{customdata[1]}" + f" <br> <b>{sltd_criteria}<b>: " + "%{customdata[2]}" + ""
+        fig.update_traces(hovertemplate=np.select([customdata == ''], ["%{customdata}"], template_str))
+        fig.data[0].customdata = customdata
         st.plotly_chart(fig, theme="streamlit", use_container_width=True)
     
 with tab2:

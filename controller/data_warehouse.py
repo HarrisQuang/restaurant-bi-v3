@@ -271,5 +271,6 @@ class WranglingData:
     def generate_statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df(self, df, sltd_criteria):
         df.columns = ['Tên món', sltd_criteria]
         total = df[sltd_criteria].sum()
-        df['Tỷ trọng'] = df[sltd_criteria].apply(lambda x: str(round(x/total*100, 2)) + ' %')
+        df['Tiêu đề'] = 'Tỷ trọng các món'
+        df['Tỷ trọng'] = df[sltd_criteria].apply(lambda x: str(round(x/total*100, 2)) + '%')
         return df
