@@ -49,3 +49,7 @@ class Query:
         "multi_days_single_component": "select ngay_filter, sub_cate, value, pct from unpivot_finance_vegan_day where ngay_filter in %s and sub_cate = '%s' order by ngay_number",
         "multi_days_multi_components": "select ngay_filter, sub_cate, value, pct from unpivot_finance_vegan_day where ngay_filter in %s and sub_cate in %s order by ngay_number"
     }
+    get_statistics_dishes_quantity_sales_dishes_vegan_tbl_with = {
+        "single_day": "SELECT ten_mon, %s(%s) FROM quantity_sales_dishes_vegan_day where ngay_filter = '%s' group by ten_mon",
+        "multi_days": "SELECT ten_mon, %s(%s) FROM quantity_sales_dishes_vegan_day where ngay_filter in %s group by ten_mon"
+    }

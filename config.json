@@ -3,7 +3,7 @@
     "SERVICE_ACCOUNT_FILE" : "even-impulse-302623-7a2843af23d8.json",
     "finance_topFolderId" : "1xZe0mDUw-yfJhcKencXQeyqYoKxcjXsX",
     "order_topFolderId" : "1_r-0dW3gkcCHfncLJN1jrG6qjEnYf1Z5",
-    "dev_db_connection": "postgresql://postgres:12345678@localhost:5432/demo_db",
+    "dev_db_connection": "postgresql://postgres:12345678@localhost:5432/rcn",
     "finance_df_base_cols": ["DOANH-THU", "CHI-PHI", "NET-SP-FOOD", "GRAB", "BAEMIN", "CK-SP-FOOD"],
     "completely_finance_df_base_cols": ["NGAY-NUMBER", "KY", "NGAY", "DOANH-THU", "CHI-PHI", "NET-SP-FOOD", "GRAB", "BAEMIN", "CK-SP-FOOD", "SP-FOOD", "CK-GRAB", "CK-BAEMIN", "TAI-QUAN", "PCT-BAEMIN", "PCT-GRAB", "PCT-SP-FOOD", "PCT-TAI-QUAN"],
     "order_df_base_cols": ["Ngày", "Số hóa đơn", "Mã món", "Tên món", "SL bán", "Đơn giá", "Doanh thu"],

@@ -148,6 +148,24 @@ class QueryDB:
             value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df = value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df.loc[:,~value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df.columns.isin(['value'])]
         return value_pct_THU_unpivot_finance_vegan_day_tbl_with_many_df
     
+    def get_statistics_dishes_quantity_sales_dishes_vegan_tbl_with(self, ngay_filter_list, sltd_criteria, sltd_measure):
+        ngay_filter_list = tuple(ngay_filter_list)
+        if sltd_criteria == 'Doanh số':
+            sltd_criteria = 'sl_ban'
+        else:
+            sltd_criteria = 'tong'
+        if sltd_measure == 'Tổng cộng':
+            sltd_measure = 'sum'
+        else:
+            sltd_measure = 'avg'
+            
+        if len(ngay_filter_list) == 1:
+            result = self.connection.execute(text(query.get_statistics_dishes_quantity_sales_dishes_vegan_tbl_with["single_day"] % (sltd_measure, sltd_criteria, ngay_filter_list[0])))
+        else:
+            result = self.connection.execute(text(query.get_statistics_dishes_quantity_sales_dishes_vegan_tbl_with["multi_days"] % (sltd_measure, sltd_criteria, ngay_filter_list)))
+        statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df = pd.DataFrame(result.fetchall())
+        return statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df
+    
 class WranglingData:
     def calculate_percentage_change(self, df, orgin, criteria, grouping = True):
         temp = []
@@ -248,4 +266,10 @@ class WranglingData:
         else:
             df.columns = ['Ngày', 'Loại doanh thu', 'Phần trăm']
             df = df.style.format({'Phần trăm': '{:,.2f} %'})
+        return df
+    
+    def generate_statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df(self, df, sltd_criteria):
+        df.columns = ['Tên món', sltd_criteria]
+        total = df[sltd_criteria].sum()
+        df['Tỷ trọng'] = df[sltd_criteria].apply(lambda x: str(round(x/total*100, 2)) + ' %')
         return df

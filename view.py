@@ -42,9 +42,7 @@ with tab1:
             submitted = st.form_submit_button('Thực hiện')
         if not selected_day:
             selected_day = [ngay_filter_list[-1]]
-            
-        st.info(f'Bạn đã chọn: {selected_day}', icon="ℹ️")
-        
+                
         st.markdown("### Doanh thu, chi phí bán hàng")
         unpivot_finance_vegan_day_tbl_with_df = dw_qrdb.get_unpivot_finance_vegan_day_tbl_with(selected_day)
         if unpivot_finance_vegan_day_tbl_with_df.empty:
@@ -263,6 +261,13 @@ with tab1:
                 sltd_measure = st.selectbox("Chọn đo lường", ['Tổng cộng', 'Trung bình cộng'], index=0)
             submitted = st.form_submit_button('Thực hiện')
         
+        st.info(f'Bạn đã chọn: {selected_day}, {sltd_criteria}, {sltd_measure}', icon="ℹ️") 
+        statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df = dw_qrdb.get_statistics_dishes_quantity_sales_dishes_vegan_tbl_with(selected_day, sltd_criteria, sltd_measure)
+        statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df = dw_wd.generate_statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df(statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df, sltd_criteria)
+        st.table(statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df)
+        fig = px.treemap(statistics_dishes_quantity_sales_dishes_vegan_tbl_with_df, path=['Tên món'],values=sltd_criteria, hover_data=["Tỷ trọng"],
+                 )
+        st.plotly_chart(fig, theme="streamlit", use_container_width=True)
     
 with tab2:
     st.title("XEM BÁO CÁO THEO NGÀY")
