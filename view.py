@@ -10,6 +10,22 @@ import controller.utils as utils
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import streamlit.components.v1 as components 
+
+_RELEASE = True 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+build_dir = os.path.join(parent_dir, "build")
+
+if(_RELEASE):
+    _my_component = components.declare_component(
+    "calendar_custom",
+    path = build_dir 
+    )
+else:
+    _my_component = components.declare_component(
+    "calendar_custom",
+    url="http://localhost:3001"
+    )
 
 with open('config.json', "r", encoding='utf-8') as f:
     data = json.loads(f.read())
@@ -32,8 +48,13 @@ with tab1:
     placeholder = st.empty()
 
     label_colors = {'condition': [], 'value': 'white'}  # The default value if no condition is met
-        
+         
     with placeholder.container():
+        return_value = _my_component(name='Hai', greeting='ahihi', key=191)
+        st.write("ahihi")
+        if (return_value):
+            st.write("Number of clicks: ", return_value[0]['$d'])
+            st.write("Number of clicks: ", return_value[1]['$d'])
         ngay_filter_list = dw_qrdb.get_ngay_filter_orders_vegan_day_tbl()
         with st.form(key='form-chon-ngay-chay'):
             col1, col2 = st.columns(2)
